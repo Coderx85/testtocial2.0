@@ -1,5 +1,7 @@
 "use client"
+import Login from "@/components/Login";
 import useAuth from "@/context/useAuth";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -18,7 +20,12 @@ export default function Home() {
           Welcome to our website! We are a group of developers who are passionate about creating web applications. We hope you enjoy your stay.
         </p>
       </div>
-      
+      <div className=" p-12 bg-slate-800">
+        <Login />
+        <Link href="/register" className='pt-16 underline text-blue-700 mx-auto px-auto'>
+          Create an account
+        </Link>
+      </div>
     </main>
   );
 }
