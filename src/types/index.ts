@@ -19,3 +19,27 @@ export interface User {
   username: string;
   password: string;
 }
+
+export interface AuthUser {
+  _id: string,
+  appwriteID: string,
+  name: string,
+  username: string,
+  bio: string,
+  userPosts: [],
+  likedPosts: [],
+  createdAt?: Date,
+  updatedAt?: Date,
+  email: string;
+  password: string;
+
+}
+
+export interface Post {
+  _id?: string;
+  author:  AuthUser;
+  content: string;
+  likes: string[];
+  comments: string[];
+  // file: Buffer;
+}

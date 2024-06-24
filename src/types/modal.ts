@@ -9,3 +9,11 @@ export interface IUser extends Document {
   userPosts: Schema.Types.ObjectId[];
   likedPosts: Schema.Types.ObjectId[];
 }
+
+export interface IPost extends Document {
+  author: Schema.Types.ObjectId;
+  contet: string;
+  likes: Schema.Types.ObjectId[];
+  comments: Schema.Types.ObjectId[];
+  file: Buffer;
+}
