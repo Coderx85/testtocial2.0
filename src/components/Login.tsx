@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import authService from '@/lib/appwrite'
 import Link from 'next/link'
 import useAuth from '@/context/useAuth'
+import { Button } from './ui/button'
 
 const initialFormData: LoginData = {
   email: '',
@@ -62,39 +63,44 @@ const Login = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="text-3xl font-bold text-center mb-6">Create an Account</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">Email</label>
+        <h2 className="text-3xl font-bold text-center mb-6 text-red-500">Create an Account</h2>
+        <form 
+          onSubmit={handleSubmit}
+          className=" items-center justify-center w-full"  
+        >
+          <div className="mb-4 py-8">
+            <label htmlFor="email" className="block font-semibold mb-2">Email</label>
             <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+              className="w-full px-4 py-2 border border-red-500 rounded-md mb-8 bg-red-500 focus:outline-none focus:border-red-500"
               required
             />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">Password</label>
+            
+            <label htmlFor="password" className="block font-semibold mb-2">Password</label>
             <input
               type="password"
               id="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+              className="w-full px-4 py-2 border border-red-300 rounded-md focus:outline-none focus:border-red-500"
               required
             />
           </div>
-          <button
+          <Button
             type="submit"
-            className="w-full bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition duration-300"
+            className="w-full text-white font-semibold py-2 px-4 rounded-mdtransition duration-300"
           >
             Login
-          </button>
+          </Button>
         </form>
+        <Link href="/register" className='mt-20 underline text-red-300 mx-auto px-auto text-lg'>
+          Create an account
+        </Link>
       </motion.div>
   )
 }

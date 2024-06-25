@@ -1,9 +1,7 @@
 import createCustomHash from '@/hooks/customHash';
 import { existingObjectId } from '../../../../build/existingObjectID';
-import authService from '@/lib/appwrite';
 import { connectDB } from '@/lib/connectdb';
 import User from '@/models/User.modal';
-import { NextApiRequest } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const GET = async (req: NextRequest, res: NextResponse) => {
@@ -18,6 +16,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     if (!user) {
       return new NextResponse(`User with ID ${userId} not found`, { status: 404 })
     }
+    
     console.log(user);
     return new NextResponse(JSON.stringify(user), { status: 200 });
   } catch (err :any) {

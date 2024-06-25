@@ -14,17 +14,14 @@ export default function Home() {
   }
   
   return (
-    <main className="grid grid-cols-2 min-h-screen p-24">
+    <main className="grid grid-cols-2 p-14">
       <div className="flex text-center px-auto mx-auto items-center">
         <p>
           Welcome to our website! We are a group of developers who are passionate about creating web applications. We hope you enjoy your stay.
         </p>
       </div>
-      <div className=" p-12 bg-slate-800">
+      <div className="px-12 py-8 border-red-500 border-2 rounded-lg">
         <Login />
-        <Link href="/register" className='pt-16 underline text-blue-700 mx-auto px-auto'>
-          Create an account
-        </Link>
       </div>
     </main>
   );

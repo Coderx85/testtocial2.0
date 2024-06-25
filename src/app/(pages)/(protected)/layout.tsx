@@ -17,7 +17,6 @@ const ProtectedLayout = ({children}:
   }
   return (
     <>
-    <Navbar />
     <div className='block'>
       {children}     
     </div>

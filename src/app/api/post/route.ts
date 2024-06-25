@@ -62,16 +62,20 @@ export const PATCH = async (req: NextRequest, res: NextResponse) => {
     const { content } = await req.json();
     await connectDB();
     const sessionID = req.url.split("=")[1];
-    const post = await Post.findById(sessionID);
+    const post = await Post.findOneAndUpdate(
+      {_id: sessionID},
+      { content: content },
+      {new : true}
+    );
 
     if (!post) {
       console.log("Post Not Found")
       return new NextResponse("Post Not Found", { status: 404 });
     }
 
-    post.content = content;
+    // post.content = content;
 
-    await post.save();
+    // await post.save();
     return new NextResponse(JSON.stringify(post), { status: 200 });
   } catch (error: any) {
     return console.error(error);

@@ -10,6 +10,7 @@ export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const allPosts = await Post.find()
       .populate("author")
+      .populate("likes")
       .lean();
 
     if (!allPosts) {
@@ -17,14 +18,19 @@ export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const updatePosts = allPosts.map((post) => {
-      const likedCount = post.likes.length;
-      return {  ...post, likedCount };
+      const likesCount = post.likes.length;
+      const liked = post.likes.includes(post.author._id);
+      return {  ...post, likesCount, liked };
     });
+
+    if(!updatePosts) {
+      return new NextResponse("Post not updated", {status: 404})
+    }
 
     console.log(updatePosts)
     return new NextResponse(
       JSON.stringify(updatePosts), 
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error: any) {
     return new NextResponse("Error");

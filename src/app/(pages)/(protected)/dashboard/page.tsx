@@ -48,7 +48,7 @@ const DashboardPage = () => {
   }, [])
 
   return (
-    <section className='container mt-5'>
+    <section className='container'>
       <div className='grid grid-cols-3 gap-5 my-5 w-full'>
         {posts.map((post) =>
           <PostCard 

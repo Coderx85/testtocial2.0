@@ -32,7 +32,6 @@ export interface AuthUser {
   updatedAt?: Date,
   email: string;
   password: string;
-
 }
 
 export interface Post {
@@ -41,5 +40,7 @@ export interface Post {
   content: string;
   likes: string[];
   comments: string[];
+  likesCount?: number;
+  liked?: boolean;
   // file: Buffer;
 }
