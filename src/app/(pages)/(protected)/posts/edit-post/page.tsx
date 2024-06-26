@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useToast } from '@/components/ui/use-toast'
 
 // const initialValues : Post= {
 //   author: '',
@@ -24,6 +25,8 @@ import { Button } from "@/components/ui/button";
 // }
 
 const editPost = () => {
+
+  const {toast} = useToast()
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -44,6 +47,9 @@ const editPost = () => {
     content: '',
     likes: [],
     comments: [],
+    likesCount: 0,
+    liked: false,
+    createdAt: 0,
   })
   const [content, setContent] = useState('');
 
@@ -92,6 +98,10 @@ const editPost = () => {
       })
 
       if(res.ok) {
+        toast({
+          title: 'Post edited successfully',
+          description: 'Your post has been edited successfully'
+        })
         router.push('/dashboard')
       }
 

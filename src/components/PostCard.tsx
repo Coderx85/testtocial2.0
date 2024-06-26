@@ -1,9 +1,11 @@
-import { AuthUser, Post } from '@/types'
+"use client";
+import { useState } from "react";
+import { Post } from '@/types'
 import Link from 'next/link'
 import { Card, CardContent, CardFooter, CardHeader } 
 from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FaComment, FaEllipsisH, FaHeart, FaShare } from 'react-icons/fa'
+import { FaClipboard, FaClock, FaComment, FaCopy, FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaShare, FaTrash } from 'react-icons/fa'
 import Image from 'next/image'
 import {
   Menubar,
@@ -11,34 +13,98 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarSeparator,
-  MenubarShortcut,
   MenubarTrigger,
-} from "@/components/ui/menubar"
-
+} from "@/components/ui/menubar";
+import { useToast } from "@/components/ui/use-toast";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useRouter } from "next/navigation";
 
 interface PostCardProps {
   post: Post
 }
 
 const PostCard = ({post}: PostCardProps) => {
+  const { toast } = useToast()
+  const router = useRouter()
+  const [likes, setLikes] = useState(post.likesCount);
+  const [liked, setLiked] = useState(post.liked);
+
+  const handleLike = () => {
+    try {
+
+      const handleLike = async () => {
+        try {
+          const res = await fetch(`/api/post/${post._id}/like`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ postId: post._id, userID: post.author._id })
+          })
+      
+          if (res.ok) {
+            // setLikes() 
+          }
+          throw new Error('Network response was not ok')
+        } catch (err: any) {
+          console.error(err.message)      
+        }
+      }
+
+    } catch (err: any) {
+      console.error(err.message)      
+    }
+  }
+  
+  const deleteBtn = async () => {
+    try {
+      const res = await fetch(`/api/post/${post._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ postId: post._id, userID: post.author._id })
+      })
+  
+      if (res.ok) {
+        toast({ 
+          title: 'Post Deleted',
+          description: 'The post has been deleted successfully'
+        })
+        router.refresh()
+        // setLikes() 
+      }
+      throw new Error('Network response was not ok')
+    } catch (err: any) {
+      console.error(err.message)      
+      }
+    }
+
+  const menuItems = [
+    { label: 'Edit', icon: <FaEdit />, href: `/posts/edit-post?id=${post._id}` },
+    { label: 'Delete', icon: <FaTrash/>, href: `/posts/delete-post?id=${post._id}` },
+  ]
+
   return (
     <section>
       <Card  className="container p-5 bg-slate-900 border-2 border-red-400">
         <CardHeader className="grid grid-cols-2 p-2 m-0 border-2 border-red-400">
           <div className='flex'>
-            <Image 
-              src={`https://ui-avatars.com/api/?name=${(post.author as AuthUser).name}&background=random`} 
-              alt="sdf"
-              width={50} 
-              height={30} 
-              className="rounded-full" 
-            />
-            <Link 
-              href={`/user/${(post.author as AuthUser)._id}`}
-              className='ml-1 text-center text-neutral-600 content-center '
-            >
-              {(post.author as AuthUser).name}
-            </Link>
+            <Avatar>
+              <AvatarImage src={`https://ui-avatars.com/api/?name=${post.author.name}&background=random`} alt="sdf" />
+              <AvatarFallback>{post.author.name}</AvatarFallback>
+            </Avatar>
+            <div className="px-2">
+              <Link 
+                href={`/user/${post.author._id}`}
+                className='ml-1 text-center text-red-500 content-center '
+              >
+                {post.author.name}
+              </Link>
+              <div className="flex items-center text-gray-500 text-xs mt-1">
+              <FaClock /> {new Date(post.createdAt).toLocaleDateString()}
+              </div>
+            </div>
 
           </div>
           <div className="text-gray-500 hover:text-gray-700 rounded ml-auto">
@@ -50,22 +116,40 @@ const PostCard = ({post}: PostCardProps) => {
                 {/* </Button> */}
               </MenubarTrigger>
                 <MenubarContent>
-                  <Link href={`/posts/edit-post?id=${post._id}`}>
-                    <MenubarItem>
-                      Edit
-                    </MenubarItem>
-                  </Link>
-                  <MenubarSeparator />
-                  <Link href={`/posts/delete-post?id=${post._id}`}>
-                    <MenubarItem>
-                      Delete
-                    </MenubarItem>
-                  </Link>
-                  {/* <MenubarItem>
-                    <Link href={`/post/`}>
-                      Share
+                  {menuItems.map((item, index) => (
+                    <Link key={index} href={item.href}>
+                      <MenubarItem>
+                        {item.label}
+                        <span className="ml-auto">{item.icon}</span>
+                      </MenubarItem>
+                      <MenubarSeparator />
                     </Link>
-                  </MenubarItem> */}
+                  ))}
+                  <MenubarItem>
+                    <Button
+                      onClick={deleteBtn}
+                      variant="outline"
+                    > 
+                      Delete
+                      <span className="ml-auto">
+                      <FaTrash />
+                      </span>
+                    </Button>
+                  </MenubarItem>
+                  <MenubarItem
+                    onClick={() => {
+                      navigator.clipboard.writeText(post.content);
+                      toast({
+                        title: 'Copied to clipboard',
+                        description: 'The post content has been copied to your clipboard.'
+                      })
+                    }}
+                  > 
+                    Copt To Clipboard
+                    <span className="ml-auto">
+                    <FaClipboard />
+                    </span>
+                  </MenubarItem>
                 </MenubarContent>
               </MenubarMenu>
             </Menubar>
@@ -78,9 +162,9 @@ const PostCard = ({post}: PostCardProps) => {
         </CardContent>
         <CardFooter className="grid grid-cols-3 gap-5 border-2 m-0 px-0 py-1 border-red-400">
           
-            <Button variant="outline">
-              <FaHeart />
-              <span>{post.likes}</span>
+            <Button variant="outline" onClick={handleLike}>
+              {liked ? <FaHeart />: <FaRegHeart/>}
+              <span>{post.likesCount}</span>
             </Button>
           
             <Button variant="outline">

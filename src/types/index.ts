@@ -35,6 +35,7 @@ export interface AuthUser {
 }
 
 export interface Post {
+  createdAt: Date;
   _id?: string;
   author:  AuthUser;
   content: string;

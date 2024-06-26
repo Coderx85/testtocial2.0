@@ -15,6 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Post } from '@/types'
 import { Models } from 'appwrite'
+import { useToast } from '@/components/ui/use-toast'
 
 // const initialValues : Post= {
 //   author: '',
@@ -26,6 +27,7 @@ import { Models } from 'appwrite'
 
 const createPost = () => {
 
+  const {toast} = useToast()
   const router = useRouter()
 
   const [post, setPost] = useState<Post>({
@@ -43,6 +45,10 @@ const createPost = () => {
     content: '',
     likes: [],
     comments: [],
+    likesCount: 0,
+    liked: false,
+    createdAt: 0,
+
   })
 
   const [data, setData] = useState<Models.User<Models.Preferences>>()
@@ -82,6 +88,10 @@ const createPost = () => {
     
           if(res.ok) {
             router.push('/dashboard')
+            toast({
+              title: 'Post created successfully',
+              description: 'Your post has been created successfully'
+            })
           }
   
           const newData = await res.json()
