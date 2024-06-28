@@ -8,14 +8,14 @@ function createCustomHash(appwriteId: string) {
                      .digest('hex');
                      
   // Ensure the hash is 24 characters long for MongoDB ObjectId compatibility
+  
+  const hashedId = hash.slice(0, 24);
+  
+  console.log(`Original ID: ${appwriteId}`);
+  console.log(`Hashed ID: ${hashedId}`);
+  
   return hash.slice(0, 24);
 }
 
-const newappwriteId = '6673bc8a000c98392d81';
-// Example usage
-const hashedId = createCustomHash(newappwriteId);
-
-console.log(`Original ID: ${newappwriteId}`);
-console.log(`Hashed ID: ${hashedId}`);
 
 export default createCustomHash;

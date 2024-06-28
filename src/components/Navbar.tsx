@@ -7,7 +7,7 @@ import Home from '@/app/(pages)/page'
 import { Button } from './ui/button'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { FaCreativeCommons, FaHome, FaPlus, FaUserCircle, FaUsers } from 'react-icons/fa'
+import { FaCode, FaCreativeCommons, FaHome, FaPlus, FaUserCircle, FaUsers } from 'react-icons/fa'
 import { HiLogout } from 'react-icons/hi'
 
 interface NavbarProps {
@@ -28,9 +28,9 @@ const navbarData : NavbarProps[] = [
     icon: <FaPlus />
   },
   {
-    name: "User List",
-    link: "/users",
-    icon: <FaUsers />
+    name: "Test Side",
+    link: "/test",
+    icon: <FaCode />
   },
   {
     name: 'Profile',
@@ -78,8 +78,6 @@ const Navbar = () => {
                 )
               }
               )}
-
-
               </div>
           )} 
     </section>

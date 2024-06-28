@@ -12,7 +12,7 @@ const Header = () => {
           </h1>
         </Link>
 
-        <div className='hidden xl:flex items-center gap-8'>
+        <div className='hidden md:flex items-center gap-8'>
           <Navbar />
         </div>
       </div>

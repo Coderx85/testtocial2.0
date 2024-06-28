@@ -1,88 +1,61 @@
-"use client";
-import { useState } from "react";
-import { Post } from '@/types'
+"use client"
+import { PostProps } from '@/types'
 import Link from 'next/link'
 import { Card, CardContent, CardFooter, CardHeader } 
 from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { FaClipboard, FaClock, FaComment, FaCopy, FaEdit, FaEllipsisH, FaHeart, FaRegHeart, FaShare, FaTrash } from 'react-icons/fa'
-import Image from 'next/image'
+import { FaClipboard, FaClock, FaComment, FaEdit, FaEllipsisH, FaHeart, FaShare, FaTrash } from 'react-icons/fa'
+
 import {
   Menubar,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
   MenubarSeparator,
-  MenubarTrigger,
+  MenubarTrigger
 } from "@/components/ui/menubar";
+
 import { useToast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useRouter } from "next/navigation";
+import { deletePost, toggleLikePost } from "@/action/action";
+import createCustomHash from "@/hooks/customHash";
+import LikeButton from './LikeButton'
+import { useState } from 'react'
 
 interface PostCardProps {
-  post: Post
+  post: PostProps
+  key: any
 }
 
-const PostCard = ({post}: PostCardProps) => {
+const PostCard = ({post, key}: PostCardProps) => {
   const { toast } = useToast()
-  const router = useRouter()
-  const [likes, setLikes] = useState(post.likesCount);
-  const [liked, setLiked] = useState(post.liked);
-
-  const handleLike = () => {
-    try {
-
-      const handleLike = async () => {
-        try {
-          const res = await fetch(`/api/post/${post._id}/like`, {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ postId: post._id, userID: post.author._id })
-          })
-      
-          if (res.ok) {
-            // setLikes() 
-          }
-          throw new Error('Network response was not ok')
-        } catch (err: any) {
-          console.error(err.message)      
-        }
-      }
-
-    } catch (err: any) {
-      console.error(err.message)      
-    }
-  }
   
-  const deleteBtn = async () => {
-    try {
-      const res = await fetch(`/api/post/${post._id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ postId: post._id, userID: post.author._id })
-      })
+  const user = createCustomHash(post.author._id);
+  const userId = user.toString();
   
-      if (res.ok) {
-        toast({ 
-          title: 'Post Deleted',
-          description: 'The post has been deleted successfully'
-        })
-        router.refresh()
-        // setLikes() 
-      }
-      throw new Error('Network response was not ok')
-    } catch (err: any) {
-      console.error(err.message)      
-      }
-    }
+  const isLiked = post.likes.includes(userId);
+  // const [likeStatus, setLikeStatus] = useState(isLiked);
+  // const [likes, setLikes] = useState(post.likes.length);
+
+  console.log(isLiked)
+
+  console.log(post._id.toString());
+  
+  // const handleLikeClick = async () => {
+  //   const result = await toggleLikePost(post._id, userId, likeStatus);
+  //   console.log(`result from LikeButton = ${result}`)
+  //   if (result.success) {
+  //     // Assuming the result also contains the updated likes count or a flag indicating like/unlike
+  //     // Adjust this logic based on your actual implementation details
+  //     setLikeStatus(!likeStatus);
+  //     setLikes(prev => !likeStatus ? prev + 1 : Math.max(prev - 1, 0));
+  //   } else {
+  //     console.error(result.error || 'Failed to toggle like');
+  //   }
+  // };
 
   const menuItems = [
     { label: 'Edit', icon: <FaEdit />, href: `/posts/edit-post?id=${post._id}` },
-    { label: 'Delete', icon: <FaTrash/>, href: `/posts/delete-post?id=${post._id}` },
   ]
 
   return (
@@ -96,7 +69,7 @@ const PostCard = ({post}: PostCardProps) => {
             </Avatar>
             <div className="px-2">
               <Link 
-                href={`/user/${post.author._id}`}
+                href={`/user/${post.author._id ?? ''}`}
                 className='ml-1 text-center text-red-500 content-center '
               >
                 {post.author.name}
@@ -125,17 +98,24 @@ const PostCard = ({post}: PostCardProps) => {
                       <MenubarSeparator />
                     </Link>
                   ))}
-                  <MenubarItem>
-                    <Button
-                      onClick={deleteBtn}
-                      variant="outline"
-                    > 
-                      Delete
-                      <span className="ml-auto">
+                  <MenubarItem 
+                    onClick={
+                      async () => {
+                        const flag = await deletePost(post._id);
+                        if(flag){
+                          toast({
+                            title: 'Post Deleted Succesfully'
+                          })
+                        }
+                      }
+                    }
+                  >
+                    Delete
+                    <span className="ml-auto">
                       <FaTrash />
-                      </span>
-                    </Button>
+                    </span>
                   </MenubarItem>
+                  <MenubarSeparator />
                   <MenubarItem
                     onClick={() => {
                       navigator.clipboard.writeText(post.content);
@@ -162,19 +142,29 @@ const PostCard = ({post}: PostCardProps) => {
         </CardContent>
         <CardFooter className="grid grid-cols-3 gap-5 border-2 m-0 px-0 py-1 border-red-400">
           
-            <Button variant="outline" onClick={handleLike}>
-              {liked ? <FaHeart />: <FaRegHeart/>}
-              <span>{post.likesCount}</span>
-            </Button>
+          <LikeButton 
+            initialLikes={post.likes.length}
+            postId={post._id.toString() as string}
+            userId={userId.toString() as string}
+            likeStatus={isLiked}
+          />
           
-            <Button variant="outline">
-              <FaComment />
-              <span>{post.comments.length}</span>
-            </Button>
+        {/*         
+          <Button variant="outline" onClick={() => handleLikeClick()}>
+            <span className='mx-auto flex gap-2'>
+              {likeStatus ? <FaHeart className='text-red-500' /> : <FaHeart />} {likes}
+            </span>
+          </Button> 
+        */}
 
-            <Button variant="outline">
-              <FaShare />
-            </Button>
+          <Button variant="outline">
+            <FaComment />
+            <span>{post.comments.length}</span>
+          </Button>
+
+          <Button variant="outline">
+            <FaShare />
+          </Button>
                       
         </CardFooter>
       </Card>

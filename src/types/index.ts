@@ -34,9 +34,9 @@ export interface AuthUser {
   password: string;
 }
 
-export interface Post {
+export interface PostProps {
   createdAt: Date;
-  _id?: string;
+  _id: string;
   author:  AuthUser;
   content: string;
   likes: string[];

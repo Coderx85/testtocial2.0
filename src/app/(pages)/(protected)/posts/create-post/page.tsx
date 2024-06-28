@@ -47,7 +47,7 @@ const createPost = () => {
     comments: [],
     likesCount: 0,
     liked: false,
-    createdAt: 0,
+    createdAt: new Date(),
 
   })
 
