@@ -13,7 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Post } from '@/types'
+import { PostProps } from '@/types'
 import { Models } from 'appwrite'
 import { useToast } from '@/components/ui/use-toast'
 
@@ -30,7 +30,7 @@ const createPost = () => {
   const {toast} = useToast()
   const router = useRouter()
 
-  const [post, setPost] = useState<Post>({
+  const [post, setPost] = useState<PostProps>({
     author: {
       _id: '',
       appwriteID: '',
@@ -42,6 +42,7 @@ const createPost = () => {
       email: '',
       password: ''
     },
+    _id: '',
     content: '',
     likes: [],
     comments: [],

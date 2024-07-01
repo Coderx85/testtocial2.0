@@ -15,12 +15,11 @@ import {
   MenubarTrigger
 } from "@/components/ui/menubar";
 
-import { useToast } from "@/components/ui/use-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { deletePost, toggleLikePost } from "@/action/action";
+import { useToast } from "@/components/ui/use-toast";
+import { deletePost } from "@/action/action";
 import createCustomHash from "@/hooks/customHash";
 import LikeButton from './LikeButton'
-import { useState } from 'react'
 
 interface PostCardProps {
   post: PostProps

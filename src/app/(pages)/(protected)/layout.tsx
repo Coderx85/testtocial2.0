@@ -1,6 +1,7 @@
 "use client"
 import Navbar from '@/components/Navbar'
-import useAuth from '@/context/useAuth'
+// import useAuth from '@/context/useAuth'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
@@ -9,12 +10,19 @@ const ProtectedLayout = ({children}:
     children: React.ReactNode
   }>
 ) => {
-  const {authStatus} = useAuth()
   const router = useRouter()
-  if(!authStatus){
-    router.replace('/')
+  
+  const {data: session} = useSession()
+  if(session){
+    router.replace('/dashboard')
     return <></>
   }
+
+  // const {authStatus} = useAuth()
+  // if(!authStatus){
+  //   router.replace('/')
+  //   return <></>
+  // }
   return (
     <>
     <div className='block'>
